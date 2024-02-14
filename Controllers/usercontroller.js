@@ -20,21 +20,21 @@ const uploadAvatar = async (file) => {
     return result.secure_url;
 };
 
-// Signup 
+// Register here 
 userController.post('/register', upload.single('avatar'), async (req, res) => {
     const { name, email, password } = req.body;
     const avatar = req.file ? await uploadAvatar(req.file) : ''; 
     if (!name || !email || !password) {
-        return res.status(400).send({ msg: 'Please fill all the details!!' });
+        return res.status(400).send({ msg: 'Please fill all the feild!'});
     }
     try {
         const emailExist = await UserModel.findOne({ email });
         if (emailExist) {
-            return res.status(400).send({ msg: 'User Already exists!! Please login' });
+            return res.status(400).send({ msg: 'User Already exists! please use another email'});
         }
         bcrypt.hash(password, 5, async (err, hash) => {
             if (err) {
-                return res.status(500).send({ msg: 'Something went wrong' });
+                return res.status(500).send({ msg: 'Something went wrong, try again'});
             }
             try {
                 const user = await UserModel.create({
@@ -43,29 +43,29 @@ userController.post('/register', upload.single('avatar'), async (req, res) => {
                     email,
                     password: hash
                 });
-                res.status(201).send({ msg: 'User Created!!' });
+                res.status(201).send({ msg: 'User Created Successfully'});
                 console.log(user);
             } catch (error) {
                 console.log(error);
-                res.status(500).send({ msg: 'Something went wrong' });
+                res.status(500).send({ msg: 'Something went wrong, try agian'});
             }
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ msg: 'Something went wrong' });
+        res.status(500).send({ msg: 'Something went wrong, try again'});
     }
 });
 
-// Login
+// Login here
 userController.post('/login', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
-        return res.status(400).send({ msg: 'Please fill all the details' });
+        return res.status(400).send({ msg: 'Please fill all the feild'});
     }
     try {
         const user = await UserModel.findOne({ email });
         if (!user) {
-            return res.status(400).send({ msg: 'Please Signup first!!' });
+            return res.status(400).send({ msg: 'Please register first!'});
         }
         bcrypt.compare(password, user.password, function (err, result) {
             if (result) {
@@ -78,12 +78,12 @@ userController.post('/login', async (req, res) => {
                     }
                 });
             } else {
-                res.status(401).send({ msg: 'Wrong Credentials!!' });
+                res.status(401).send({ msg: 'Wrong Credentials, try again!'});
             }
         });
     } catch (error) {
         console.log(error);
-        res.status(500).send({ msg: 'Something went wrong' });
+        res.status(500).send({ msg: 'Something went wrong, try again'});
     }
 });
 
