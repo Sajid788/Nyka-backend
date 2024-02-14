@@ -4,15 +4,13 @@ const authenticateUser = require('../Middleware/auth')
 const { body, validationResult } = require('express-validator');
 const productController = express.Router()
 
-// Error Handler
-
+// Error Handle here
 const errorHandler = (err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: 'Server Error' });
   };
   
-// Validation middleware
-
+// Validation middleware here
 const validate = (req, res, next) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -21,8 +19,7 @@ const validate = (req, res, next) => {
     next();
   };
 
-// Get all products
-
+// Get all products here
 productController.get('/products', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -30,34 +27,28 @@ productController.get('/products', async (req, res) => {
         
         let query = {};
     
-        // Filtering category
-
+        // Filtering category here
         if (req.query.category) {
           query.category = req.query.category;
         }
         
-         // Filtering gender
-
+         // Filtering gender here
         if (req.query.gender) {
             query.gender = req.query.gender;
           }
     
-        // Sorting 
-
+        // Sorting here
         const sortOptions = {};
         if (req.query.sort) {
           sortOptions[req.query.sort] = req.query.order === "desc" ? -1 : 1;
         }
     
-        // Searching with name
-
+        // Searching with name here
         if (req.query.name) {
-          // Use a regex for partial matching
           query.name = { $regex: new RegExp(req.query.name, "i") };
         }
     
-          query.createrId = req.userId;
-        
+        query.createrId = req.userId;      
         const totalItems = await ProductModel.countDocuments(query);
         const totalPages = Math.ceil(totalItems / pageSize);
     
@@ -77,8 +68,7 @@ productController.get('/products', async (req, res) => {
       }
   });
 
- // Get product by id
-
+ // Get product by id here
   productController.get('/products/:id', async (req, res) => {
     try {
         const product = await ProductModel.findById(req.params.id);
@@ -91,8 +81,7 @@ productController.get('/products', async (req, res) => {
       }
   });
 
-  // Create product
-
+  // Create product here
   productController.post('/products',[
     body('name').notEmpty().isLength({ min: 1, max: 50 }),
     body('picture').notEmpty(),
