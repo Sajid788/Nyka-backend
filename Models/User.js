@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true, maxlength: 50 },
-  avatar: {type: String,required: true,},
+  avatar: {type: String},
   email: { type: String, required: true, unique: true, match: /^[\w-]+@([\w-]+\.)+[\w-]{2,4}$/ },
   password: { type: String, required: true },
   created_at: { type: Date, default: Date.now },
